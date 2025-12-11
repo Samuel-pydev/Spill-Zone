@@ -61,7 +61,7 @@ const Feed = ({ token }: Props) => {
   };
 
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
+    const date = new Date(timestamp + 'Z');
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
     

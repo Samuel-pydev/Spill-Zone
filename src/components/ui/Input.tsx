@@ -18,7 +18,7 @@ const Input = ({
   required = false 
 }: Props) => {
   return (
-    <label className="block">
+    <label className="block w-full">
       <span className="text-lg font-black mb-2 block">{label}</span>
       <input 
         type={type}
@@ -27,8 +27,7 @@ const Input = ({
         placeholder={placeholder}
         disabled={disabled}
         required={required}
-        className="mt-0.5 w-100 h-15 outline-0 border-2 py-2 px-2 border-black shadow-[4px_4px_0_0] rounded-md sm:text-md"
-        // style={{ boxShadow: 'inset 4px 4px 0px rgba(0,0,0,0.2)' }}
+        className="w-full min-h-[3rem] outline-none border-4 border-black py-3 px-4 font-bold text-base sm:text-lg rounded-md shadow-[4px_4px_0_0_#000] focus:shadow-[2px_2px_0_0_#000] transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
       />
     </label>
   );

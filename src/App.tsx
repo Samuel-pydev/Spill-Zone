@@ -29,13 +29,13 @@ function App() {
     <div className="min-h-screen bg-[#00F0FF] pb-24">
       {/* Header */}
       <div className="max-w-2xl mx-auto p-4 mb-6">
-        <div 
+        {/* <div 
           className="bg-[#FF10F0] border-4 border-black p-6 mb-4"
           style={{ boxShadow: '12px 12px 0px #000' }}
         >
           <h1 className="text-4xl font-black text-white">SPILLZONE</h1>
           <p className="text-white font-bold mt-2">Say what you really think. No names attached.</p>
-        </div>
+        </div> */}
 
         {/* Logout button */}
         <button

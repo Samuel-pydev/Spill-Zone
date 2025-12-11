@@ -16,33 +16,35 @@ const AuthPage = ({ onLoginSuccess }: Props) => {
   const API_URL = import.meta.env.VITE_API_URL
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    const endpoint = authMode === 'login' ? '/login' : '/signup';
+  const endpoint = authMode === 'login' ? '/login' : '/signup';
 
-    try {
-      const response = await fetch(`${API_URL}${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        setError(data.detail || 'Authentication failed');
-        setLoading(false);
-        return;
-      }
-
-      onLoginSuccess(data.access_token);
-    } catch (err) {
-      setError('Connection error. Is the backend running?');
+    if (!response.ok) {
+      // This is the important part - handle the error
+      setError(data.detail || 'Authentication failed');
       setLoading(false);
+      return; // Stop here, don't call onLoginSuccess
     }
-  };
+
+    onLoginSuccess(data.access_token);
+    setLoading(false); // Add this
+  } catch (err) {
+    setError('Connection error. Is the backend running?');
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#00F0FF] flex items-center justify-center p-4">

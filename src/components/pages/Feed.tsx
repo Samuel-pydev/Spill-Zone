@@ -17,7 +17,7 @@ const Feed = ({ token }: Props) => {
   const [newPost, setNewPost] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const API_URL = 'https://spill-zone-bck-v1.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL
 
   // Load feed when component mounts
   useEffect(() => {

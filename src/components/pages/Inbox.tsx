@@ -17,7 +17,7 @@ const Inbox = ({ token }: Props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = 'https://spill-zone-bck-v1.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     loadInbox();

@@ -14,7 +14,7 @@ const SendMessage = ({ token }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const API_URL = 'https://spill-zone-bck-v1.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL
 
   const checkUsername = async (username: string) => {
     if (!username.trim()) {

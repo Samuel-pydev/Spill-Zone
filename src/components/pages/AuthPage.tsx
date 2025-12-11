@@ -13,7 +13,7 @@ const AuthPage = ({ onLoginSuccess }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const API_URL = 'https://spill-zone-bck-v1.onrender.com';
+  const API_URL = import.meta.env.VITE_API_URL
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -96,7 +96,7 @@ const Feed = ({ token }: Props) => {
   };
 
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp + 'Z');  // FIXED: added 'Z' for UTC
+    const date = new Date(timestamp);
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
     

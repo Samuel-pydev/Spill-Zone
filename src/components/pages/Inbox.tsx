@@ -18,6 +18,7 @@ const Inbox = ({ token }: Props) => {
   const [loading, setLoading] = useState(true);
 
   const API_URL = import.meta.env.VITE_API_URL
+  // const API_URL = "http://127.0.0.1:8000"
 
   useEffect(() => {
     loadInbox();
@@ -25,7 +26,7 @@ const Inbox = ({ token }: Props) => {
 
   const loadInbox = async () => {
     try {
-      const response = await fetch(`${API_URL}/inbox`, {
+      const response = await fetch(`${API_URL}/messages/inbox`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();

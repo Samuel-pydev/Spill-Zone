@@ -8,6 +8,7 @@ interface Props {
 
 interface Post {
   id: number;
+  user_id: number;  // ADDED
   text: string;
   timestamp: string;
 }
@@ -16,17 +17,33 @@ const Feed = ({ token }: Props) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [newPost, setNewPost] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const API_URL = import.meta.env.VITE_API_URL
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);  // ADDED
+  
+  const API_URL = import.meta.env.VITE_API_URL;
+  // const API_URL = "http://127.0.0.1:8000"
 
   // Load feed when component mounts
   useEffect(() => {
     loadFeed();
+    getCurrentUser();  // ADDED
   }, []);
+
+  // ADDED THIS FUNCTION
+  const getCurrentUser = async () => {
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setCurrentUserId(data.id);
+    } catch (error) {
+      console.error('Error getting user:', error);
+    }
+  };
 
   const loadFeed = async () => {
     try {
-      const response = await fetch(`${API_URL}/feed`, {
+      const response = await fetch(`${API_URL}/feed`, {  // FIXED: added ( after fetch
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -41,7 +58,7 @@ const Feed = ({ token }: Props) => {
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/feed`, {
+      const response = await fetch(`${API_URL}/feed`, {  // FIXED: added ( after fetch
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,8 +77,26 @@ const Feed = ({ token }: Props) => {
     setLoading(false);
   };
 
+  // ADDED THIS FUNCTION
+  const handleDeletePost = async (postId: number) => {
+    if (!confirm('Delete this post? This cannot be undone.')) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/feed/${postId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (response.ok) {
+        loadFeed(); // Reload feed after deleting
+      }
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
+  };
+
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp);
+    const date = new Date(timestamp + 'Z');  // FIXED: added 'Z' for UTC
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
     
@@ -109,8 +144,11 @@ const Feed = ({ token }: Props) => {
           posts.map((post) => (
             <PostCard
               key={post.id}
+              id={post.id}  // ADDED
               text={post.text}
               timestamp={formatTime(post.timestamp)}
+              canDelete={post.user_id === currentUserId}  // ADDED
+              onDelete={handleDeletePost}  // ADDED
             />
           ))
         )}

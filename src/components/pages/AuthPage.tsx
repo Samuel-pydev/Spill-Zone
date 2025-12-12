@@ -14,13 +14,14 @@ const AuthPage = ({ onLoginSuccess }: Props) => {
   const [error, setError] = useState('');
 
   const API_URL = import.meta.env.VITE_API_URL
+      // const API_URL = "http://127.0.0.1:8000"
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   setError('');
   setLoading(true);
 
-  const endpoint = authMode === 'login' ? '/login' : '/signup';
+  const endpoint = authMode === 'login' ? '/auth/login' : '/auth/signup';
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, {

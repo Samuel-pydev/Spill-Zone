@@ -15,6 +15,7 @@ const SendMessage = ({ token }: Props) => {
   const [error, setError] = useState('');
 
   const API_URL = import.meta.env.VITE_API_URL
+  // const API_URL = "http://127.0.0.1:8000"
 
   const checkUsername = async (username: string) => {
     if (!username.trim()) {
@@ -23,7 +24,7 @@ const SendMessage = ({ token }: Props) => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/user/${username}`);
+      const response = await fetch(`${API_URL}/auth/user/${username}`);
       const data = await response.json();
       setUsernameExists(data.exists);
     } catch (error) {
@@ -44,7 +45,7 @@ const SendMessage = ({ token }: Props) => {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/message`, {
+      const response = await fetch(`${API_URL}/messages/send`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

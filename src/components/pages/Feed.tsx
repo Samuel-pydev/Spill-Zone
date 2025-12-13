@@ -8,7 +8,7 @@ interface Props {
 
 interface Post {
   id: number;
-  user_id: number;  // ADDED
+  user_id: number | null
   text: string;
   timestamp: string;
 }
@@ -147,7 +147,7 @@ const Feed = ({ token }: Props) => {
               id={post.id}  // ADDED
               text={post.text}
               timestamp={formatTime(post.timestamp)}
-              canDelete={post.user_id === currentUserId}  // ADDED
+              canDelete={post.user_id != null && post.user_id === currentUserId}
               onDelete={handleDeletePost}  // ADDED
             />
           ))

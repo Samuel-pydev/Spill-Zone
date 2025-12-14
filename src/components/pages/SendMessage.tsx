@@ -14,8 +14,8 @@ const SendMessage = ({ token }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const API_URL = import.meta.env.VITE_API_URL
-  // const API_URL = "http://127.0.0.1:8000"
+  const MAX_MESSAGE_LENGTH = 1000;  // ADD THIS
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const checkUsername = async (username: string) => {
     if (!username.trim()) {
@@ -116,10 +116,20 @@ const SendMessage = ({ token }: Props) => {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Say what's on your mind..."
+            maxLength={MAX_MESSAGE_LENGTH}
             className="w-full border-4 border-black p-4 font-bold text-lg resize-none focus:outline-none"
             rows={6}
             style={{ boxShadow: 'inset 4px 4px 0px rgba(0,0,0,0.2)' }}
           />
+          
+          {/* CHARACTER COUNTER - ADD THIS */}
+          <div className="flex justify-end mt-2">
+            <span className={`text-sm font-bold ${
+              message.length > MAX_MESSAGE_LENGTH * 0.9 ? 'text-orange-600' : 'text-gray-600'
+            }`}>
+              {message.length}/{MAX_MESSAGE_LENGTH}
+            </span>
+          </div>
         </div>
 
         <div className="flex items-center gap-3 mb-6">
@@ -144,7 +154,7 @@ const SendMessage = ({ token }: Props) => {
         <Button
           text={loading ? 'SENDING...' : 'SEND MESSAGE'}
           onClick={handleSend}
-          disabled={loading || !message.trim() || usernameExists !== true}
+          disabled={loading || !message.trim() || usernameExists !== true || message.length > MAX_MESSAGE_LENGTH}
         />
       </div>
     </div>

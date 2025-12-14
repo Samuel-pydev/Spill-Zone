@@ -94,6 +94,25 @@ const Feed = ({ token }: Props) => {
     }
   };
 
+  const handleReact = async (postId: number, emoji: string) => {
+  try {
+    const response = await fetch(`${API_URL}/reactions/post/${postId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ emoji })
+    });
+    
+    if (response.ok) {
+      loadFeed(); // Reload to get updated reaction counts
+    }
+  } catch (error) {
+    console.error('Error reacting:', error);
+  }
+};
+
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp + 'Z');
     const now = new Date();
@@ -159,6 +178,9 @@ const Feed = ({ token }: Props) => {
               timestamp={formatTime(post.timestamp)}
               canDelete={post.user_id != null && post.user_id === currentUserId}
               onDelete={handleDeletePost}
+              reactionCounts={post.reaction_counts}  // ADD THIS
+              userReactions={post.user_reactions}  // ADD THIS
+              onReact={handleReact}  // ADD THIS
             />
           ))
         )}

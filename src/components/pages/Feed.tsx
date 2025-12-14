@@ -11,6 +11,8 @@ interface Post {
   user_id: number | null;
   text: string;
   timestamp: string;
+  reaction_counts: { [emoji: string]: number };  
+  user_reactions: string[];
 }
 
 const Feed = ({ token }: Props) => {

@@ -8,7 +8,7 @@ interface Props {
 
 interface Post {
   id: number;
-  user_id: number | null
+  user_id: number | null;
   text: string;
   timestamp: string;
 }
@@ -17,18 +17,16 @@ const Feed = ({ token }: Props) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [newPost, setNewPost] = useState('');
   const [loading, setLoading] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);  // ADDED
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   
+  const MAX_POST_LENGTH = 500;  // Character limit
   const API_URL = import.meta.env.VITE_API_URL;
-  // const API_URL = "http://127.0.0.1:8000"
 
-  // Load feed when component mounts
   useEffect(() => {
     loadFeed();
-    getCurrentUser();  // ADDED
+    getCurrentUser();
   }, []);
 
-  // ADDED THIS FUNCTION
   const getCurrentUser = async () => {
     try {
       const response = await fetch(`${API_URL}/auth/me`, {
@@ -43,7 +41,7 @@ const Feed = ({ token }: Props) => {
 
   const loadFeed = async () => {
     try {
-      const response = await fetch(`${API_URL}/feed`, {  // FIXED: added ( after fetch
+      const response = await fetch(`${API_URL}/feed`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
@@ -58,7 +56,7 @@ const Feed = ({ token }: Props) => {
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/feed`, {  // FIXED: added ( after fetch
+      const response = await fetch(`${API_URL}/feed`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,7 +67,7 @@ const Feed = ({ token }: Props) => {
 
       if (response.ok) {
         setNewPost('');
-        loadFeed(); // Reload feed to show new post
+        loadFeed();
       }
     } catch (error) {
       console.error('Error posting:', error);
@@ -77,7 +75,6 @@ const Feed = ({ token }: Props) => {
     setLoading(false);
   };
 
-  // ADDED THIS FUNCTION
   const handleDeletePost = async (postId: number) => {
     if (!confirm('Delete this post? This cannot be undone.')) return;
     
@@ -88,7 +85,7 @@ const Feed = ({ token }: Props) => {
       });
       
       if (response.ok) {
-        loadFeed(); // Reload feed after deleting
+        loadFeed();
       }
     } catch (error) {
       console.error('Error deleting post:', error);
@@ -96,7 +93,7 @@ const Feed = ({ token }: Props) => {
   };
 
   const formatTime = (timestamp: string) => {
-    const date = new Date(timestamp + 'Z' );
+    const date = new Date(timestamp + 'Z');
     const now = new Date();
     const diff = Math.floor((now.getTime() - date.getTime()) / 1000);
     
@@ -118,15 +115,26 @@ const Feed = ({ token }: Props) => {
           value={newPost}
           onChange={(e) => setNewPost(e.target.value)}
           placeholder="Spill the tea... 👀"
+          maxLength={MAX_POST_LENGTH}
           className="w-full border-4 border-black p-4 font-bold text-lg resize-none focus:outline-none"
           rows={4}
           style={{ boxShadow: 'inset 4px 4px 0px rgba(0,0,0,0.2)' }}
         />
+        
+        {/* Character Counter */}
+        <div className="flex justify-end mt-2">
+          <span className={`text-sm font-bold ${
+            newPost.length > MAX_POST_LENGTH * 0.9 ? 'text-orange-600' : 'text-gray-600'
+          }`}>
+            {newPost.length}/{MAX_POST_LENGTH}
+          </span>
+        </div>
+        
         <div className="mt-4">
           <Button
             text={loading ? 'POSTING...' : 'POST IT'}
             onClick={handlePost}
-            disabled={loading || !newPost.trim()}
+            disabled={loading || !newPost.trim() || newPost.length > MAX_POST_LENGTH}
           />
         </div>
       </div>
@@ -144,11 +152,11 @@ const Feed = ({ token }: Props) => {
           posts.map((post) => (
             <PostCard
               key={post.id}
-              id={post.id}  // ADDED
+              id={post.id}
               text={post.text}
               timestamp={formatTime(post.timestamp)}
               canDelete={post.user_id != null && post.user_id === currentUserId}
-              onDelete={handleDeletePost}  // ADDED
+              onDelete={handleDeletePost}
             />
           ))
         )}
